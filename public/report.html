@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>تقارير - DonationFlow</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h2>تقارير</h2>
+      <div><button class="btn btn-ghost" onclick="location.href='/dashboard.html'">رجوع</button></div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <div style="flex:1"><div style="font-size:13px;color:var(--text-muted)">إجمالي التبرعات</div><div id="totalDonations" style="font-size:20px;font-weight:700">--</div></div>
+        <div style="flex:1"><div style="font-size:13px;color:var(--text-muted)">عدد المتبرعين</div><div id="donorsCount" style="font-size:20px;font-weight:700">--</div></div>
+        <div style="flex:1"><div style="font-size:13px;color:var(--text-muted)">عدد الحالات</div><div id="casesCount" style="font-size:20px;font-weight:700">--</div></div>
+      </div>
+
+      <h3 style="margin-top:14px">المبلغ المحصّل لكل حالة</h3>
+      <table class="table"><thead><tr><th>الحالة</th><th>المطلوب</th><th>المحصّل</th></tr></thead><tbody id="reportTable"><tr><td colspan="3">جار التحميل...</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <script>
+    function getAuthHeader() {
+      const token = localStorage.getItem('token');
+      return token ? { 'Authorization': 'Bearer ' + token } : {};
+    }
+
+    async function loadReport(){
+      try{
+        const res = await fetch('/api/reports', { headers: getAuthHeader() });
+        if(res.status === 401){ alert('غير مصرح.'); window.location.href='/login.html'; return; }
+        const data = await res.json();
+        document.getElementById('totalDonations').textContent = data.totalDonations || 0;
+        document.getElementById('donorsCount').textContent = data.donorsCount || 0;
+        document.getElementById('casesCount').textContent = data.casesCount || 0;
+        const tbody = document.getElementById('reportTable'); tbody.innerHTML='';
+        (data.byCase||[]).forEach(c=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${c.caseName}</td><td>${c.requiredAmount}</td><td>${c.receivedAmount}</td>`;
+          tbody.appendChild(tr);
+        });
+      }catch(e){ console.error(e); alert('خطأ'); }
+    }
+    loadReport();
+  </script>
+</body>
