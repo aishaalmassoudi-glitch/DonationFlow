@@ -1,2 +1,2 @@
                                                              DonationFlow
- 
+ The “DonationFlow” project is an innovative donation management system designed to address the challenges companies face in tracking and organizing donations. The project provides a digital platform that allows employees to register, manage, and track donations throughout the year. The system also improves data accuracy by automating internal processes to document each contribution and generate analytical annual reports. A comprehensive dashboard provides insights into total annual donations, the number of participating employees, and the status of registered cases, enabling management to make informed decisions and foster a culture of giving within the organization.
