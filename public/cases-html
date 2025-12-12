@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>الحالات - DonationFlow</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h2>قائمة الحالات</h2>
+      <div>
+        <button class="btn btn-primary" onclick="location.href='/add-case.html'">Add Case</button>
+        <button class="btn btn-ghost" onclick="location.href='/dashboard.html'">رجوع</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <table class="table">
+        <thead>
+          <tr><th>اسم الحالة</th><th>نوع الاحتياج</th><th>المطلوب</th><th>المحصّل</th><th>الحالة</th><th>إجراء</th></tr>
+        </thead>
+        <tbody id="casesTable"><tr><td colspan="6">جار التحميل...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function getAuthHeader() {
+      const token = localStorage.getItem('token');
+      return token ? { 'Authorization': 'Bearer ' + token } : {};
+    }
+
+    async function loadCases(){
+      try{
+        const res = await fetch('/api/cases', { headers: getAuthHeader() });
+        if(res.status === 401){ alert('غير مصرح.'); window.location.href='/login.html'; return; }
+        const list = await res.json();
+        const tbody = document.getElementById('casesTable'); tbody.innerHTML='';
+        list.forEach(c=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${c.caseName}</td>
+            <td>${c.needType}</td>
+            <td>${c.requiredAmount}</td>
+            <td>${c.receivedAmount}</td>
+            <td><span class="badge ${c.receivedAmount>=c.requiredAmount? 'badge-completed' : 'badge-active'}">${c.receivedAmount>=c.requiredAmount? 'Completed':'Active'}</span></td>
+            <td><button class="btn btn-danger" onclick="deleteCase('${c._id}')">حذف</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }catch(e){ console.error(e); alert('خطأ'); }
+    }
+
+    async function deleteCase(id){ if(!confirm('حذف الحالة؟')) return; try{ const res = await fetch('/api/cases/'+id, { method:'DELETE', headers: getAuthHeader() }); if(res.ok) loadCases(); else alert('فشل الحذف'); }catch(e){ alert('خطأ'); } }
+    loadCases();
+  </script>
+</body>
+</html>
