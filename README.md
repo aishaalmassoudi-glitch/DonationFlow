@@ -6,23 +6,40 @@ Effortlessly manage donations, track contributors, and streamline the giving pro
 ---
 
 ### **About The Project**
-**DonationFlow** is an innovative donation management system designed to address the challenges faced by companies in tracking and organizing donations. The project provides a digital platform where employees can easily register, manage, and track their charitable contributions throughout the year. The system helps improve data accuracy by automating internal processes for documenting each contribution and generating annual analytical reports.
-
-Through an integrated dashboard, the system offers essential insights, such as the total annual donations, the number of participating employees, and the status of registered cases. These features empower the administration to make informed decisions and promote a culture of giving within the organization.
-
+“DonationFlow is a donation management system designed to facilitate the donation process and track donations and donors. The system provides a digital interface for users to register their donations, track them, and generate comprehensive reports on donations collected and participants.”
 ---
 
 ### **Key Features**
-- **📱 User Authentication** – Secure registration and login system.
-- **💰 Donation Tracking** – Easily track all donations, including amounts, dates, and donors.
-- **📄 Donor Management** – Store and manage donor details, including contact information and donation history.
-- **🔄 Recurring Donations** – Set up and manage recurring donation schedules.
-- **📊 Reporting** – Generate reports on donations over specific periods, total amounts, and more.
-- **🔍 Search & Filter** – Quickly find donations, donors, or reports using powerful search functionality.
-- **🛡️ Data Privacy** – All data is stored securely and can only be accessed by authorized users.
-- **💾 Local Storage** – The app uses local storage for offline use, ensuring you can access your data without internet connectivity.
 
----
+- 📱 **Secure Login**  
+  As an employee, I want to log in using my username and password so that I can access my personal donation account.
+
+- 👨‍💼 **Employee Management (Admin)**  
+  As an administrator, I want to add, edit, and delete employee accounts to control who is authorized to use the system.
+
+- 💰 **Add New Donation**  
+  As an employee, I want to record a new donation with its amount, type, and related case so that it is included in my annual donation record.
+
+- 📂 **Case Management**  
+  As a system manager, I want to create, update, and delete donation cases to ensure the information remains organized and accurate.
+
+- ✏️ **Edit/Delete Donations**  
+  As an employee, I want to edit or delete my donation entries so that my records remain correct and up to date.
+
+- 📊 **Dashboard Overview**  
+  As an administrator, I want to view real-time system statistics such as total donation amounts, number of participating employees, and active cases.
+
+- 📋 **Employee Donation History**  
+  As an employee, I want to view all my past donations in one list so that I can track my yearly contribution.
+
+- 🔄 **Automatic Case Total Update**  
+  As a manager, I want the system to automatically update the total received amount for each case whenever a new donation is added.
+
+- ⚠️ **Confirmation Messages**  
+  As a user, I want to receive a confirmation message before deleting any record so that I can avoid accidental actions.
+
+- 📅 **Annual Donation Reports**  
+  As top management, I want to generate an annual report that summarizes each employee’s total donations to support performance evaluations and promotion decisions.
 
 ### **Built With**
 - **Frontend:** HTML, CSS, JavaScript (Vanilla)
