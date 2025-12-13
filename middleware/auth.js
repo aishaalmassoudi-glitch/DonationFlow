@@ -1,4 +1,5 @@
-// يتحقق من وجود توكن JWT في الـ Authorization header
+// middleware/auth.js
+// Verify JWT from Authorization header and attach payload to req.user
 const jwt = require('jsonwebtoken');
 
 module.exports = function (req, res, next) {
@@ -10,7 +11,6 @@ module.exports = function (req, res, next) {
 
   const scheme = parts[0];
   const token = parts[1];
-
   if (!/^Bearer$/i.test(scheme)) return res.status(401).json({ error: 'Bad token format' });
 
   try {
