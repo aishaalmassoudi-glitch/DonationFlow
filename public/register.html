@@ -1,48 +1,36 @@
 <!doctype html>
 <html lang="ar">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>إنشاء حساب - DonationFlow</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>إنشاء حساب</title><link rel="stylesheet" href="styles.css"></head>
 <body>
-  <div class="container" style="max-width:480px;margin-top:60px;">
-    <div class="card">
-      <h2 style="text-align:center;margin-top:0">إنشاء حساب</h2>
-
-      <div class="form-row"><label>اسم المستخدم</label><input id="username" class="input" /></div>
-      <div class="form-row"><label>كلمة المرور</label><input id="password" type="password" class="input" /></div>
-      <div class="form-row"><label>تأكيد كلمة المرور</label><input id="password2" type="password" class="input" /></div>
-
-      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">
-        <button id="registerBtn" class="btn btn-primary">تسجيل</button>
-        <button class="btn btn-ghost" onclick="location.href='/login.html'">رجوع</button>
-      </div>
-
-      <p style="color:var(--text-muted);font-size:13px;margin-top:12px">سيُنشأ دور المستخدم كـ <strong>staff</strong> بشكل افتراضي. لتعيين admin عدّل الدور يدويًا في DB.</p>
-    </div>
+<div id="loader" class="loader">جارٍ المعالجة...</div>
+<div class="container" style="max-width:450px; margin-top:50px;">
+  <div class="card">
+    <h2 style="text-align:center; margin-top:0;">إنشاء حساب جديد</h2>
+    <div class="form-row"><label>اسم المستخدم</label><input id="username" class="input"></div>
+    <div class="form-row"><label>كلمة المرور</label><input id="password" type="password" class="input"></div>
+    <div class="form-row"><label>نوع الحساب</label><select id="role" class="input"><option value="donor">موظف (متبرع)</option><option value="admin">مسؤول</option></select></div>
+    <div style="margin-top:15px; display:flex; justify-content:flex-end;"><button id="registerBtn" class="btn btn-primary">إنشاء حساب</button></div>
+    <hr><p style="text-align:center;">لديك حساب؟ <a href="login.html">تسجيل الدخول</a></p>
   </div>
+</div>
 
-  <script>
-    document.getElementById('registerBtn').addEventListener('click', async () => {
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const password2 = document.getElementById('password2').value;
-      if(!username || !password) return alert('املأ الحقول');
-      if(password !== password2) return alert('كلمتا المرور غير متطابقتين');
+<script>
+function showMessage(text, type="success"){ const msg=document.createElement('div'); msg.className = type==='error' ? 'error' : 'success'; msg.innerText = text; document.body.prepend(msg); setTimeout(()=>msg.remove(), 3000); }
+function showLoader(){ loader.style.display='block'; } function hideLoader(){ loader.style.display='none'; }
 
-      try {
-        const res = await fetch('/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-        const data = await res.json();
-        if(res.ok) { alert('تم التسجيل بنجاح. سجّل الدخول الآن.'); window.location.href = '/login.html'; }
-        else alert(data.error || 'فشل التسجيل');
-      } catch (e) { alert('خطأ في الاتصال'); }
-    });
-  </script>
+document.getElementById('registerBtn').addEventListener('click', async ()=> {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const role = document.getElementById('role').value;
+  if(!username || !password) return showMessage('الرجاء تعبئة الحقول','error');
+  showLoader();
+  try {
+    const res = await fetch('/api/register', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ username, password, role })});
+    const data = await res.json();
+    hideLoader();
+    if(res.ok){ showMessage('تم إنشاء الحساب، سجّل الدخول الآن'); setTimeout(()=>location.href='/login.html',700); } else showMessage(data.error||'فشل التسجيل','error');
+  } catch(e){ hideLoader(); showMessage('خطأ في الاتصال','error'); }
+});
+</script>
 </body>
 </html>
