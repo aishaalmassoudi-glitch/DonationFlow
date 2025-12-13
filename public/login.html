@@ -24,9 +24,7 @@
 </div>
 
 <script>
-function showMessage(text, type="success"){ const div=document.createElement('div'); div.className = type==='error' ? 'error' : 'success'; 
-div.innerText = text; document.body.prepend(div); 
-setTimeout(()=>div.remove(),3000); }
+function showMessage(text, type="success"){ const div=document.createElement('div'); div.className = type==='error' ? 'error' : 'success'; div.innerText = text; document.body.prepend(div); setTimeout(()=>div.remove(),3000); }
 function showLoader(){ document.getElementById('loader').style.display = 'block'; }
 function hideLoader(){ document.getElementById('loader').style.display = 'none'; }
 
@@ -44,7 +42,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
       localStorage.setItem("role", data.role || 'donor');
       localStorage.setItem("username", data.username || '');
       showMessage("تم تسجيل الدخول بنجاح");
-      if(data.role === "admin") location.href = "/admin-dashboard.html"; else location.href = "/dashboard.html";
+      if(data.role === "admin") location.href = "admin-dashboard.html"; else location.href = "dashboard.html";
     } else {
       showMessage(data.error || "فشل تسجيل الدخول", "error");
     }
@@ -57,3 +55,4 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
 </script>
 </body>
 </html>
+
