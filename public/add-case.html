@@ -1,19 +1,24 @@
 <!doctype html>
 <html lang="ar">
-  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>إضافة حالة</title><link rel="stylesheet" href="styles.css">
   </head>
 <body>
 <div id="loader" class="loader">جارِ الاتصال...</div>
-<script> if(!localStorage.getItem('token')) location.href='/login.html'; </script>
+<script> if(!localStorage.getItem('token')) location.href='login.html'; </script>
 <div class="container" style="max-width:640px">
-  <div class="card"><h3>إضافة حالة جديدة</h3><div class="form-row">
-    <label>اسم الحالة</label><input id="caseName" class="input"></div>
-    <div class="form-row"><label>وصف مختصر</label><textarea id="description" class="input" rows="3"></textarea></div>
+  <div class="card"><h3>إضافة حالة جديدة</h3>
+    <div class="form-row"><label>اسم الحالة</label>
+      <input id="caseName" class="input"></div>
+    <div class="form-row"><label>وصف مختصر</label>
+      <textarea id="description" class="input" rows="3"></textarea></div>
     <div class="form-row"><label>نوع الاحتياج</label><input id="needType" class="input"></div>
-    <div class="form-row"><label>المبلغ المطلوب</label><input id="requiredAmount" type="number" class="input"></div>
+    <div class="form-row"><label>المبلغ المطلوب</label>
+      <input id="requiredAmount" type="number" class="input"></div>
     <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-      <button id="save" class="btn btn-primary">حفظ</button>
+      <button id="save" class="btn btn-primary">حفظ</button>\
       <button class="btn btn-secondary" onclick="location.href='/cases.html'">رجوع</button>
     </div></div></div>
 
@@ -24,9 +29,9 @@ document.getElementById('save').addEventListener('click', async ()=> {
   const needType = document.getElementById('needType').value.trim();
   const requiredAmount = Number(document.getElementById('requiredAmount').value || 0);
   if(!caseName) return alert('ادخل اسم الحالة');
-  const res = await fetch('/api/cases',{ method:'POST', headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('token') },
-    body: JSON.stringify({ caseName, description, needType, requiredAmount })});
-  if(res.ok) { alert('تمت الإضافة'); location.href='/cases.html'; } else { const d=await res.json(); alert(d.error||'فشل'); }
+  const res = await fetch('/api/cases',{ method:'POST', headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('token') }, body: JSON.stringify({ caseName, description, needType, requiredAmount })});
+  if(res.ok) { alert('تمت الإضافة'); location.href='/cases.html'; } 
+  else { const d=await res.json(); alert(d.error||'فشل'); }
 });
 </script>
 </body></html>
