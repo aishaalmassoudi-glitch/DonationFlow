@@ -1,26 +1,32 @@
 <!doctype html>
-<html lang="ar"><head><meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>الحالات</title><link rel="stylesheet" href="styles.css">
-</head>
+<html lang="ar">
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>الحالات</title><link rel="stylesheet" href="styles.css">
+  </head>
 <body>
 <div id="loader" class="loader">جارِ التحميل...</div>
-<script> if(!localStorage.getItem('token')) location.href='/login.html'; </script>
-<div class="container"><div class="card"><div style="display:flex;justify-content:space-between">
-  <h3>الحالات</h3><button class="btn btn-primary" onclick="location.href='/add-case.html'">إضافة حالة</button></div>
-  <table class="table"><thead><tr><th>الاسم</th><th>النوع</th><th>المطلوب</th><th>المحصّل</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="tbody"><tr><td colspan="6">جارِ التحميل...</td></tr></tbody></table></div></div>
+<script> if(!localStorage.getItem('token')) location.href='login.html'; </script>
+<div class="container">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between">
+      <h3>الحالات</h3>
+      <button class="btn btn-primary" onclick="location.href='add-case.html'">إضافة حالة</button>
+    </div>
+    <table class="table"><thead><tr><th>الاسم</th><th>النوع</th><th>المطلوب</th><th>المحصّل</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="tbody"><tr><td colspan="6">جارِ التحميل...</td></tr></tbody></table>
+  </div></div>
 
 <script>
-async function load(){ document.getElementById('loader').style.display='block'; 
- try{ const res = await fetch('/api/cases', { headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}); 
- const list = await res.json(); document.getElementById('loader').style.display='none'; const tbody=document.getElementById('tbody'); tbody.innerHTML='';
-  if(!list.length){ tbody.innerHTML='<tr><td colspan="6">لا توجد حالات</td></tr>';
-    return; }
-     list.forEach(c=> tbody.innerHTML += `<tr><td>${c.caseName}</td><td>${c.needType||'-'}</td><td>${c.requiredAmount||0}</td><td>${c.receivedAmount||0}</td><td>${c.receivedAmount>=c.requiredAmount?'<span class="badge badge-complete">مكتملة</span>':'<span class="badge badge-active">نشطة</span>'}</td><td><button class="btn btn-danger" onclick="del('${c._id}')">حذف</button></td></tr>`); }
- catch(e){ document.getElementById('loader').style.display='none'; alert('خطأ'); console.error(e); } }
-async function del(id){ if(!confirm('تأكيد الحذف؟')) 
-  return;
-  const res=await fetch('/api/cases/'+id,{ method:'DELETE', headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}); if(res.ok) load(); else alert('فشل الحذف'); }
+async function load(){ document.getElementById('loader').style.display='block';
+  try{ const res = await fetch('/api/cases', { headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }});
+    const list = await res.json(); document.getElementById('loader').style.display='none'; 
+      const tbody=document.getElementById('tbody'); tbody.innerHTML='';
+      if(!list.length){ tbody.innerHTML='<tr><td colspan="6">لا توجد حالات</td></tr>'; 
+          return; } list.forEach(c=> tbody.innerHTML += `<tr><td>${c.caseName}</td><td>${c.needType||'-'}</td><td>${c.requiredAmount||0}</td><td>${c.receivedAmount||0}</td><td>${c.receivedAmount>=c.requiredAmount?'<span class="badge badge-complete">مكتملة</span>':'<span class="badge badge-active">نشطة</span>'}</td><td><button class="btn btn-danger" onclick="del('${c._id}')">حذف</button></td></tr>`); }
+  catch(e){ document.getElementById('loader').style.display='none'; alert('خطأ'); console.error(e); } }
+async function del(id){ if(!confirm('تأكيد الحذف؟')) return; 
+  const res=await fetch('/api/cases/'+id,{ method:'DELETE', headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}); 
+      if(res.ok) load(); else alert('فشل الحذف'); }
 load();
 </script>
 </body></html>
