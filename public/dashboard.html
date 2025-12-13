@@ -1,26 +1,21 @@
 <!doctype html>
 <html lang="ar">
-<head><meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>لوحة المتبرع</title><link rel="stylesheet" href="styles.css">
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>لوحة المتبرع</title><link rel="stylesheet" href="styles.css"></head>
 <body>
 <div id="loader" class="loader">جارٍ التحميل...</div>
-<script> if(!localStorage.getItem('token')) location.href='/login.html'; </script>
+<script> if(!localStorage.getItem('token')) location.href='login.html'; </script>
 
 <div class="navbar"><div class="title">DonationFlow</div><div><button class="btn btn-secondary" onclick="logout()">تسجيل خروج</button></div></div>
 
 <div class="container">
   <div class="card"><h3>نظرة عامة</h3><div id="stats" style="display:flex;gap:12px;margin-top:12px"></div></div>
-  <div class="card"><h3>خيارات سريعة</h3><div style="display:flex;gap:12px"><button class="btn btn-primary" onclick="location.href='/add-donation.html'">إضافة تبرع</button>
-    <button class="btn btn-secondary" onclick="location.href='/donations.html'">عرض التبرعات</button></div></div>
+  <div class="card"><h3>خيارات سريعة</h3><div style="display:flex;gap:12px"><button class="btn btn-primary" onclick="location.href='add-donation.html'">إضافة تبرع</button><button class="btn btn-secondary" onclick="location.href='donations.html'">عرض التبرعات</button></div></div>
 </div>
 
 <script>
-function logout(){ localStorage.clear(); location.href='/login.html'; }
+function logout(){ localStorage.clear(); location.href='login.html'; }
 function showLoader(){ loader.style.display='block'; } function hideLoader(){ loader.style.display='none'; }
-function showMessage(t,type='success'){ const d=document.createElement('div'); d.className = type==='error'?'error':'success';
- d.innerText=t; document.body.prepend(d); setTimeout(()=>d.remove(),3000); }
+function showMessage(t,type='success'){ const d=document.createElement('div'); d.className = type==='error'?'error':'success'; d.innerText=t; document.body.prepend(d); setTimeout(()=>d.remove(),3000); }
 
 async function load(){
   showLoader();
