@@ -24,7 +24,8 @@
 </div>
 
 <script>
-function showMessage(text, type="success"){ const div=document.createElement('div'); div.className = type==='error' ? 'error' : 'success'; div.innerText = text; document.body.prepend(div); 
+function showMessage(text, type="success"){ const div=document.createElement('div'); div.className = type==='error' ? 'error' : 'success'; 
+div.innerText = text; document.body.prepend(div); 
 setTimeout(()=>div.remove(),3000); }
 function showLoader(){ document.getElementById('loader').style.display = 'block'; }
 function hideLoader(){ document.getElementById('loader').style.display = 'none'; }
