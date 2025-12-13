@@ -1,37 +1,53 @@
 <!doctype html>
 <html lang="ar">
-  <head><meta charset="utf-8">
+  <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>إضافة تبرع</title><link rel="stylesheet" href="styles.css">
+    <title>إضافة تبرع</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
 <body>
 <div id="loader" class="loader">جارِ التحميل...</div>
 <script> if(!localStorage.getItem('token')) location.href='/login.html'; </script>
-<div class="container" style="max-width:680px">
-  <div class="card"><h3>إضافة تبرع</h3><div class="form-row"><label>المتبرع</label><select id="donor" class="input"></select></div>
-    <div class="form-row"><label>الحالة</label><select id="case" class="input"></select></div>
-    <div class="form-row"><label>المبلغ</label><input id="amount" type="number" class="input"></div>
-    <div class="form-row"><label>ملاحظة (اختياري)</label><input id="desc" class="input"></div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button id="save" class="btn btn-primary">حفظ</button>
-      <button class="btn btn-secondary" onclick="location.href='/donations.html'">رجوع</button>
-    </div></div></div>
+<div class="container" style="max-width:680px"><div class="card">
+    <h3>إضافة تبرع</h3>
+    <div class="form-row">
+        <label>المتبرع</label>
+        <select id="donor" class="input"></select>
+    </div>
+    <div class="form-row">
+        <label>الحالة</label>
+        <select id="case" class="input"></select>
+    </div>
+    <div class="form-row">
+        <label>المبلغ</label>
+        <input id="amount" type="number" class="input">
+    </div>
+    <div class="form-row">
+        <label>ملاحظة (اختياري)</label>
+        <input id="desc" class="input">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+        <button id="save" class="btn btn-primary">حفظ</button>
+        <button class="btn btn-secondary" onclick="location.href='donations.html'">رجوع</button>
+    </div>
+</div></div>
 
 <script>
-async function loadOptions(){ document.getElementById('loader').style.display='block';
- try{ const [donRes,caseRes] = await Promise.all([ fetch('/api/donors',{ headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}), fetch('/api/cases',{ headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}) ]); 
-  const donors = await donRes.json(); const cases = await caseRes.json(); document.getElementById('loader').style.display='none';
-  document.getElementById('donor').innerHTML = donors.map(d=>`<option value="${d._id}">${d.name}</option>`).join('');
-    document.getElementById('case').innerHTML = cases.map(c=>`<option value="${c._id}">${c.caseName}</option>`).join(''); }catch(e){ document.getElementById('loader').style.display='none';
-        alert('خطأ تحميل القوائم'); console.error(e); } }
+async function loadOptions(){ document.getElementById('loader').style.display='block'; 
+      try{ const [donRes,caseRes] = await Promise.all([ fetch('/api/donors',{ headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}), fetch('/api/cases',{ headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}) ]);
+          const donors = await donRes.json(); const cases = await caseRes.json(); document.getElementById('loader').style.display='none'; document.getElementById('donor').innerHTML = donors.map(d=>`<option value="${d._id}">${d.name}</option>`).join(''); document.getElementById('case').innerHTML = cases.map(c=>`<option value="${c._id}">${c.caseName}</option>`).join(''); }
+      catch(e){ document.getElementById('loader').style.display='none'; alert('خطأ تحميل القوائم'); console.error(e); } }
 document.getElementById('save').addEventListener('click', async ()=> { const donorId=document.getElementById('donor').value; 
-  const caseId=document.getElementById('case').value; 
-    const amount=Number(document.getElementById('amount').value||0);
-     const description=document.getElementById('desc').value.trim(); 
-      if(!donorId||!caseId||!amount){ alert('املأ الحقول'); return; } 
-       document.getElementById('loader').style.display='block';
-          try{ const res = await fetch('/api/donations',{ method:'POST', headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('token') }, body: JSON.stringify({ donorId, caseId, amount, description })});
-        document.getElementById('loader').style.display='none'; 
-          if(res.ok){ alert('تمت الإضافة'); location.href='/donations.html'; } else { const d=await res.json(); alert(d.error||'فشل'); } } catch(e){ document.getElementById('loader').style.display='none'; alert('خطأ'); } });
+      const caseId=document.getElementById('case').value;
+        const amount=Number(document.getElementById('amount').value||0);
+          const description=document.getElementById('desc').value.trim(); 
+              if(!donorId||!caseId||!amount){ alert('املأ الحقول'); 
+        return; } document.getElementById('loader').style.display='block';
+      try{ const res = await fetch('/api/donations',{ method:'POST', headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('token') }, body: JSON.stringify({ donorId, caseId, amount, description })}); document.getElementById('loader').style.display='none'; 
+          if(res.ok){ alert('تمت الإضافة'); location.href='/donations.html'; } 
+          else { const d=await res.json(); alert(d.error||'فشل'); } }
+      catch(e){ document.getElementById('loader').style.display='none'; alert('خطأ'); } });
 loadOptions();
 </script>
 </body></html>
