@@ -6,9 +6,21 @@
 <div class="container" style="max-width:450px; margin-top:50px;">
   <div class="card">
     <h2 style="text-align:center; margin-top:0;">إنشاء حساب جديد</h2>
-    <div class="form-row"><label>اسم المستخدم</label><input id="username" class="input"></div>
-    <div class="form-row"><label>كلمة المرور</label><input id="password" type="password" class="input"></div>
-    <div class="form-row"><label>نوع الحساب</label><select id="role" class="input"><option value="donor">موظف (متبرع)</option><option value="admin">مسؤول</option></select></div>
+<div class="form-row">
+  <label for="username">اسم المستخدم</label>
+  <input id="username" class="input" type="text" placeholder="أدخل اسم المستخدم">
+</div>
+<div class="form-row">
+  <label for="password">كلمة المرور</label>
+  <input id="password" type="password" class="input" placeholder="أدخل كلمة المرور">
+</div>
+<div class="form-row">
+  <label for="role">نوع الحساب</label>
+  <select id="role" class="input" title="اختر نوع الحساب">
+    <option value="donor">موظف (متبرع)</option>
+    <option value="admin">مسؤول</option>
+  </select>
+</div>
     <div style="margin-top:15px; display:flex; justify-content:flex-end;"><button id="registerBtn" class="btn btn-primary">إنشاء حساب</button></div>
     <hr><p style="text-align:center;">لديك حساب؟ <a href="login.html">تسجيل الدخول</a></p>
   </div>
@@ -28,7 +40,7 @@ document.getElementById('registerBtn').addEventListener('click', async ()=> {
     const res = await fetch('/api/register', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ username, password, role })});
     const data = await res.json();
     hideLoader();
-    if(res.ok){ showMessage('تم إنشاء الحساب، سجّل الدخول الآن'); setTimeout(()=>location.href='/login.html',700); } else showMessage(data.error||'فشل التسجيل','error');
+    if(res.ok){ showMessage('تم إنشاء الحساب، سجّل الدخول الآن'); setTimeout(()=>location.href='login.html',700); } else showMessage(data.error||'فشل التسجيل','error');
   } catch(e){ hideLoader(); showMessage('خطأ في الاتصال','error'); }
 });
 </script>
