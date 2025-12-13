@@ -1,24 +1,32 @@
 <!doctype html>
 <html lang="ar">
-  <head><meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
     <title>إضافة متبرع</title><link rel="stylesheet" href="styles.css">
   </head>
 <body>
 <div id="loader" class="loader">جارِ الاتصال...</div>
-<script> if(!localStorage.getItem('token')) location.href='/login.html'; </script>
-<div class="container" style="max-width:520px">
-  <div class="card"><h3>إضافة متبرع</h3><div class="form-row">
-    <label>الاسم</label><input id="name" class="input"></div><div
-    class="form-row"><label>الهاتف</label><input id="phone" class="input"></div><div class="form-row">
-      <label>البريد</label><input id="email" class="input"></div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button id="save" class="btn btn-primary">حفظ</button><button 
-        class="btn btn-secondary" onclick="location.href='/donors.html'">رجوع</button></div></div></div>
+<script> if(!localStorage.getItem('token')) location.href='login.html'; </script>
+<div class="container" style="max-width:520px"><div class="card"><h3>إضافة متبرع</h3>
+  <div class="form-row"><label>الاسم</label><input id="name" class="input"></div>
+  <div class="form-row"><label>الهاتف</label>
+    <input id="phone" class="input"></div>
+  <div class="form-row"><label>البريد</label>
+    <input id="email" class="input"></div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+    <button id="save" class="btn btn-primary">حفظ</button>
+    <button class="btn btn-secondary" onclick="location.href='/donors.html'">رجوع</button>
+  </div></div></div>
 
 <script>
-function showMessage(t,type='success'){ const d=document.createElement('div'); d.className = type==='error' ? 'error' : 'success'; d.innerText=t; document.body.prepend(d); setTimeout(()=>d.remove(),3000); }
+function showMessage(t,type='success'){ const d=document.createElement('div'); d.className = type==='error' ? 'error' : 'success'; d.innerText=t; document.body.prepend(d);
+ setTimeout(()=>d.remove(),3000); }
 document.getElementById('save').addEventListener('click', async ()=> {
-  const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const email=document.getElementById('email').value.trim();
-  if(!name||!phone) return showMessage('املأ الحقول المطلوبة','error');
+  const name=document.getElementById('name').value.trim(); 
+  const phone=document.getElementById('phone').value.trim();
+  const email=document.getElementById('email').value.trim();
+  if(!name||!phone) 
+    return showMessage('املأ الحقول المطلوبة','error');
   document.getElementById('loader').style.display='block';
   try {
     const res = await fetch('/api/donors',{ method:'POST', headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('token') }, body: JSON.stringify({ name, phone, email })});
