@@ -1,80 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar">
-<head>
-  <meta charset="UTF-8">
-  <title>لوحة التحكم - DonationFlow</title>
-  <link rel="stylesheet" href="styles.css">
-
-  <style>
-    body {
-      text-align: center;
-      padding: 30px;
-    }
-
-    h1 {
-      margin-bottom: 25px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 25px;
-      max-width: 600px;
-      margin: auto;
-      margin-top: 40px;
-    }
-
-    .card-btn {
-      background: #ffffff;
-      border: 2px solid #ddd;
-      padding: 25px;
-      border-radius: 15px;
-      cursor: pointer;
-      font-size: 20px;
-      transition: 0.2s;
-      box-shadow: 0 4px 12px #00000015;
-    }
-
-    .card-btn:hover {
-      transform: scale(1.05);
-      border-color: #2e61ff;
-    }
-
-    .icon {
-      font-size: 46px;
-      margin-bottom: 10px;
-      color: #2e61ff;
-    }
-  </style>
-
+<head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة المتبرع</title><link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div id="loader" class="loader">جارٍ التحميل...</div>
+<script> if(!localStorage.getItem('token')) location.href='/login.html'; </script>
 
-  <h1>لوحة التحكم</h1>
+<div class="navbar"><div class="title">DonationFlow</div><div><button class="btn btn-secondary" onclick="logout()">تسجيل خروج</button></div></div>
 
-  <div class="grid">
+<div class="container">
+  <div class="card"><h3>نظرة عامة</h3><div id="stats" style="display:flex;gap:12px;margin-top:12px"></div></div>
+  <div class="card"><h3>خيارات سريعة</h3><div style="display:flex;gap:12px"><button class="btn btn-primary" onclick="location.href='/add-donation.html'">إضافة تبرع</button>
+    <button class="btn btn-secondary" onclick="location.href='/donations.html'">عرض التبرعات</button></div></div>
+</div>
 
-    <div class="card-btn" onclick="location.href='donors.html'">
-      <div class="icon">👤</div>
-      المتبرعين
-    </div>
+<script>
+function logout(){ localStorage.clear(); location.href='/login.html'; }
+function showLoader(){ loader.style.display='block'; } function hideLoader(){ loader.style.display='none'; }
+function showMessage(t,type='success'){ const d=document.createElement('div'); d.className = type==='error'?'error':'success';
+ d.innerText=t; document.body.prepend(d); setTimeout(()=>d.remove(),3000); }
 
-    <div class="card-btn" onclick="location.href='cases.html'">
-      <div class="icon">📦</div>
-      الحالات
-    </div>
-
-    <div class="card-btn" onclick="location.href='donations.html'">
-      <div class="icon">💰</div>
-      التبرعات
-    </div>
-
-    <div class="card-btn" onclick="location.href='report.html'">
-      <div class="icon">📊</div>
-      التقارير
-    </div>
-
-  </div>
-
+async function load(){
+  showLoader();
+  try{
+    const res = await fetch('/api/dashboard', { headers:{ 'Authorization': 'Bearer ' + localStorage.getItem('token') }});
+    const data = await res.json();
+    hideLoader();
+    document.getElementById('stats').innerHTML = `
+      <div class="card" style="flex:1"><div>عدد المتبرعين</div><div style="font-weight:700">${data.donorsCount}</div></div>
+      <div class="card" style="flex:1"><div>عدد الحالات</div><div style="font-weight:700">${data.casesCount}</div></div>
+      <div class="card" style="flex:1"><div>إجمالي التبرعات</div><div style="font-weight:700">${data.totalDonations} ر.س</div></div>
+    `;
+  } catch(e){ hideLoader(); showMessage('فشل تحميل البيانات','error'); console.error(e); }
+}
+load();
+</script>
 </body>
 </html>
