@@ -1,52 +1,25 @@
 <!doctype html>
-<html lang="ar">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>تقارير - DonationFlow</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="container">
-    <div class="topbar">
-      <h2>تقارير</h2>
-      <div><button class="btn btn-ghost" onclick="location.href='/dashboard.html'">رجوع</button></div>
-    </div>
+<html lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>التقارير</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>
+  <body>
+<div id="loader" class="loader">جارِ التحميل...</div>
+<script> if(!localStorage.getItem('token') || localStorage.getItem('role')!=='admin') location.href='/login.html'; </script>
+<div class="container"><div class="topbar"><h2>التقارير</h2><div><button class="btn btn-secondary" onclick="location.href='/admin-dashboard.html'">رجوع</button></div></div>
+<div class="card" id="summaryCard"><h3>ملخص</h3><div id="summary" style="display:flex;gap:12px"></div></div>
+<div class="card"><h3>المبلغ المحصّل لكل حالة</h3><canvas id="casesChart" height="120"></canvas></div>
+<div class="card"><h3>تفاصيل الحالات</h3><table class="styled-table"><thead><tr><th>الحالة</th><th>المطلوب</th><th>المحصّل</th></tr></thead><tbody id="casesTable"><tr><td colspan="3">جارِ التحميل...</td></tr></tbody></table></div></div>
 
-    <div class="card" style="margin-top:12px;">
-      <div style="display:flex;gap:16px;flex-wrap:wrap;">
-        <div style="flex:1"><div style="font-size:13px;color:var(--text-muted)">إجمالي التبرعات</div><div id="totalDonations" style="font-size:20px;font-weight:700">--</div></div>
-        <div style="flex:1"><div style="font-size:13px;color:var(--text-muted)">عدد المتبرعين</div><div id="donorsCount" style="font-size:20px;font-weight:700">--</div></div>
-        <div style="flex:1"><div style="font-size:13px;color:var(--text-muted)">عدد الحالات</div><div id="casesCount" style="font-size:20px;font-weight:700">--</div></div>
-      </div>
-
-      <h3 style="margin-top:14px">المبلغ المحصّل لكل حالة</h3>
-      <table class="table"><thead><tr><th>الحالة</th><th>المطلوب</th><th>المحصّل</th></tr></thead><tbody id="reportTable"><tr><td colspan="3">جار التحميل...</td></tr></tbody></table>
-    </div>
-  </div>
-
-  <script>
-    function getAuthHeader() {
-      const token = localStorage.getItem('token');
-      return token ? { 'Authorization': 'Bearer ' + token } : {};
-    }
-
-    async function loadReport(){
-      try{
-        const res = await fetch('/api/reports', { headers: getAuthHeader() });
-        if(res.status === 401){ alert('غير مصرح.'); window.location.href='/login.html'; return; }
-        const data = await res.json();
-        document.getElementById('totalDonations').textContent = data.totalDonations || 0;
-        document.getElementById('donorsCount').textContent = data.donorsCount || 0;
-        document.getElementById('casesCount').textContent = data.casesCount || 0;
-        const tbody = document.getElementById('reportTable'); tbody.innerHTML='';
-        (data.byCase||[]).forEach(c=>{
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${c.caseName}</td><td>${c.requiredAmount}</td><td>${c.receivedAmount}</td>`;
-          tbody.appendChild(tr);
-        });
-      }catch(e){ console.error(e); alert('خطأ'); }
-    }
-    loadReport();
-  </script>
+<script>
+function showMessage(t,type='error'){ const d=document.createElement('div'); d.className = type==='error' ? 'error' : 'success'; d.innerText=t; document.body.prepend(d); setTimeout(()=>d.remove(),3000); }
+async function loadReports(){ document.getElementById('loader').style.display='block'; try{ const res = await fetch('/api/reports',{ headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }});
+    if(!res.ok){ document.getElementById('loader').style.display='none'; showMessage('فشل التحميل','error'); return; } const data = await res.json(); document.getElementById('loader').style.display='none'; 
+     document.getElementById('summary').innerHTML = `<div class="card" style="flex:1"><div>إجمالي التبرعات</div><div style="font-weight:700">${data.totalDonations} ر.س</div></div><div class="card" style="flex:1">
+       <div>عدد المتبرعين</div><div style="font-weight:700">${data.donorsCount}</div></div><div class="card" style="flex:1">
+        <div>عدد الحالات</div><div style="font-weight:700">${data.casesCount}</div></div>`; const tbody=document.getElementById('casesTable'); tbody.innerHTML=''; const labels=[]; const values=[]; (data.caseTotals||[]).forEach(c=>{ labels.push(c.caseName);
+          values.push(c.totalAmount||0);
+         tbody.innerHTML += `<tr><td>${c.caseName}</td><td>${c.requiredAmount||0}</td><td>${c.totalAmount||0}</td></tr>`; }); 
+        const ctx = document.getElementById('casesChart').getContext('2d'); new Chart(ctx,{ type:'bar', data:{ labels, datasets:[{ label:'المحصّل (ر.س)', data: values, backgroundColor: 'rgba(74,144,226,0.8)' }] }, 
+      options:{ responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } } }); }catch(e){ document.getElementById('loader').style.display='none'; showMessage('خطأ','error'); console.error(e); } } loadReports();
+</script>
 </body>
+</html>
