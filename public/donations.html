@@ -1,49 +1,25 @@
-<!doctype html>
-<html lang="ar">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>التبرعات - DonationFlow</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+<!doctype html><html lang="ar">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>التبرعات</title><link rel="stylesheet" href="styles.css">
+  </head>
 <body>
-  <div class="container">
-    <div class="topbar">
-      <h2>سجل التبرعات</h2>
-      <div>
-        <button class="btn btn-primary" onclick="location.href='/add-donation.html'">Add Donation</button>
-        <button class="btn btn-ghost" onclick="location.href='/dashboard.html'">رجوع</button>
-      </div>
-    </div>
+<div id="loader" class="loader">جارِ التحميل...</div>
+<script> if(!localStorage.getItem('token')) location.href='/login.html'; </script>
+<div class="container"><div class="card">
+  <div style="display:flex;justify-content:space-between">
+    <h3>التبرعات</h3><button class="btn btn-primary" onclick="location.href='/add-donation.html'">إضافة تبرع</button></div>
+  <table class="table"><thead><tr><th>المتبرع</th><th>الحالة</th><th>المبلغ</th><th>التاريخ</th><th>إجراء</th></tr></thead><tbody id="tbody">
+    <tr><td colspan="5">جارِ التحميل...</td></tr></tbody></table></div></div>
 
-    <div class="card" style="margin-top:12px;">
-      <table class="table">
-        <thead><tr><th>المتبرع</th><th>الحالة</th><th>المبلغ</th><th>التاريخ</th></tr></thead>
-        <tbody id="donationsTable"><tr><td colspan="4">جار التحميل...</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-
-  <script>
-    function getAuthHeader() {
-      const token = localStorage.getItem('token');
-      return token ? { 'Authorization': 'Bearer ' + token } : {};
-    }
-
-    async function loadDonations(){
-      try{
-        const res = await fetch('/api/donations', { headers: getAuthHeader() });
-        if(res.status === 401){ alert('غير مصرح.'); window.location.href='/login.html'; return; }
-        const list = await res.json();
-        const tbody = document.getElementById('donationsTable'); tbody.innerHTML='';
-        list.forEach(d=>{
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${d.donorName||'-'}</td><td>${d.caseName||'-'}</td><td>${d.amount}</td><td>${new Date(d.date).toLocaleString()}</td>`;
-          tbody.appendChild(tr);
-        });
-      }catch(e){ console.error(e); alert('خطأ'); }
-    }
-    loadDonations();
-  </script>
-</body>
-</html>
+<script>
+async function load(){ document.getElementById('loader').style.display='block';
+   try{ const res = await fetch('/api/donations', { headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}); 
+    const list = await res.json(); document.getElementById('loader').style.display='none'; 
+      const tbody=document.getElementById('tbody'); tbody.innerHTML=''; if(!list.length){ tbody.innerHTML = '<tr><td colspan="5">لا توجد تبرعات</td></tr>'; return; } 
+       list.forEach(d=> tbody.innerHTML += `<tr><td>${d.donorName}</td><td>${d.caseName}</td><td>${d.amount}</td><td>${new Date(d.date).toLocaleString()}</td><td><button class="btn btn-small" onclick="del('${d._id}')">حذف</button></td></tr>`); } 
+   catch(e){ document.getElementById('loader').style.display='none'; console.error(e); alert('خطأ'); } }
+async function del(id){ if(!confirm('تأكيد الحذف؟')) return;
+    const res = await fetch('/api/donations/'+id,{ method:'DELETE', headers:{ 'Authorization':'Bearer '+localStorage.getItem('token') }}); if(res.ok) load(); else alert('فشل'); }
+load();
+</script>
+</body></html>
