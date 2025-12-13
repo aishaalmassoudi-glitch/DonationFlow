@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ar">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>لوحة المسؤول</title><link rel="stylesheet" href="styles.css">
+  </head>
+<body>
+<div id="loader" class="loader">جارٍ التحميل...</div>
+<script> if(!localStorage.getItem('token') || localStorage.getItem('role')!=='admin') location.href='/login.html'; </script>
+
+<div class="navbar"><div class="title">DonationFlow - Admin</div>
+  <div><button class="btn btn-secondary" onclick="logout()">خروج</button></div></div>
+<div class="container">
+  <div class="card"><h3>إدارة سريعة</h3><div style="display:flex;gap:12px">
+    <button class="btn btn-primary" onclick="location.href='/donors.html'">المتبرعين</button>
+    <button class="btn btn-primary" onclick="location.href='/cases.html'">الحالات</button>
+    <button class="btn btn-primary" onclick="location.href='/report.html'">التقارير</button>
+  </div></div>
+</div>
+
+<script> function logout(){ localStorage.clear(); location.href='/login.html'; } </script>
+</body>
+</html>
